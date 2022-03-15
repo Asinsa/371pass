@@ -129,6 +129,7 @@ cxxopts::Options App::cxxoptsSetup() {
 //  App::Action action = parseActionArgument(args);
 App::Action App::parseActionArgument(cxxopts::ParseResult &args) {
   std::string input = args["action"].as<std::string>();
+  transform(input.begin(), input.end(), input.begin(), ::tolower);
   if (input == "create") {
       return Action::CREATE;
   } else if (input == "read") {
