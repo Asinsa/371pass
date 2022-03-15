@@ -8,6 +8,7 @@
 // -----------------------------------------------------
 
 #include <algorithm>
+#include <exception>
 #include <iostream>
 #include <string>
 #include <unordered_map>
@@ -128,7 +129,17 @@ cxxopts::Options App::cxxoptsSetup() {
 //  App::Action action = parseActionArgument(args);
 App::Action App::parseActionArgument(cxxopts::ParseResult &args) {
   std::string input = args["action"].as<std::string>();
-  return Action::READ;
+  if (input == "create") {
+      return Action::CREATE;
+  } else if (input == "read") {
+      return Action::READ;
+  } else if (input == "update") {
+      return Action::UPDATE;
+  } else if (input == "delete") {
+      return Action::DELETE;
+  } else {
+      throw std::invalid_argument("action");
+  }
 }
 
 // TODO Write a function, getJSON, that returns a std::string containing the
