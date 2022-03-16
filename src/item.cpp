@@ -12,6 +12,10 @@
 #include <string>
 #include <sstream>
 #include <unordered_map>
+#include "lib_json.hpp"
+
+
+#include <iostream>
 
 // TODO Write a constructor that takes one parameter, a string identifier
 //  and initialises the object and member data.
@@ -116,8 +120,8 @@ std::unordered_map<std::string, std::string> Item::getAllEntries() {
 bool operator==(Item& iObj1, Item& iObj2) {
     if ((iObj1.getIdent() == iObj2.getIdent()) && (iObj1.size() == iObj2.size())) {
         unsigned int count = 0;
-        for (auto it = iObj1.getAllEntries().begin(); it != iObj1.getAllEntries().end(); ++it) {
-            if (it->second == iObj2.getEntry(it->first)) {
+        for (auto entry = iObj1.getAllEntries().begin(); entry != iObj1.getAllEntries().end(); ++entry) {
+            if (entry->second == iObj2.getEntry(entry->first)) {
                 count++;
             }
         }
@@ -137,19 +141,16 @@ bool operator==(Item& iObj1, Item& iObj2) {
 //  Item iObj{"itemIdent"};
 //  std::string s = iObj.str();
 std::string Item::str() {
-    std::stringstream sstr;
-    sstr << identIdent;
-    //sstr << '{"' << identIdent << '":{';
-    /*
-    unsigned int count = 0;
-    for (auto it = itemEntires.begin(); it != itemEntires.end(); ++it){
-        sstr << '"' << it->first << '":"' << it->second << '"';
-        count++;
-        if (count != itemEntires.size()) {
-            sstr << ',';
-        }
+    using json = nlohmann::json;
+    
+    json entries;
+    for (auto entry = itemEntires.begin(); entry != itemEntires.end(); ++entry){
+        entries[entry->first] = entry->second;
     }
-    sstr << '}}';
-    */
-    return sstr.str();
+
+    json jsonRep = {
+        {identIdent, entries}
+    };
+
+    return jsonRep.dump();
 }
