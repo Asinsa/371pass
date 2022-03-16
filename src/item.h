@@ -15,9 +15,33 @@
 
 #ifndef ITEM_H
 #define ITEM_H
+#include <string>
+#include <unordered_map>
 
 class Item {
+    private:
+    std::unordered_map<std::string, std::string> itemEntires;
+    std::string identIdent;
 
+    public:
+    Item(std::string identIdent);
+    
+    unsigned int size() const;
+    bool empty();
+
+    void setIdent(std::string newIdent);
+    std::string getIdent();
+
+    bool addEntry(std::string key, std::string value);
+    std::string getEntry(std::string key);
+
+    bool deleteEntry(std::string key);
+
+    std::unordered_map<std::string, std::string> getAllEntries();
+
+    friend bool operator==(const Item& iObj1, const Item& iObj2);
+
+    std::string str();
 };
 
 #endif // ITEM_H
