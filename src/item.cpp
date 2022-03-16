@@ -72,8 +72,13 @@ std::string Item::getIdent() {
 //  Item iObj{"identIdent"};
 //  iObj.addEntry("key", "value");
 bool Item::addEntry(std::string key, std::string value) {
-    itemEntires.insert(std::pair<std::string,std::string> (key, value));
-    return true;
+    if (itemEntires.find(key) == itemEntires.end()) {
+        itemEntires.insert(std::pair<std::string,std::string> (key, value));
+        return true;
+    }
+    auto item = itemEntires.find(key);
+    item->second = value;
+    return false;
 }
 
 // TODO Write a function, getEntry, that takes one parameter, an entry
@@ -85,7 +90,12 @@ bool Item::addEntry(std::string key, std::string value) {
 //  iObj.addEntry("key", "value");
 //  auto value = iObj.getEntry("key");
 std::string Item::getEntry(std::string key) {
-    return itemEntires.at(key);
+    if (itemEntires.find(key) != itemEntires.end()) {
+        return itemEntires.at(key);
+    }
+    else {
+        throw std::out_of_range("The entry " + key + " does not exist");
+    }
 }
 
 // TODO Write a function, deleteEntry, that takes one parameter, an entry
@@ -97,8 +107,12 @@ std::string Item::getEntry(std::string key) {
 //  iObj.addEntry("key", "value");
 //  iObj.deleteEntry("key");
 bool Item::deleteEntry(std::string key) {
-    itemEntires.erase(key);
-    return true;
+    if (itemEntires.find(key) != itemEntires.end()) {
+        itemEntires.erase(key);
+        return true;
+    }
+    throw std::out_of_range("The entry " + key + " does not exist so cannot be deleted");
+    return false;
 }
 
 // Method to return all the entries of the item so it can be compared in the operator overload method.
