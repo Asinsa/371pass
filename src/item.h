@@ -20,7 +20,7 @@
 
 class Item {
     private:
-    std::unordered_map<std::string, std::string> itemEntires;
+    std::unordered_map<std::string, std::string> itemEntries;
     std::string identIdent;
 
     public:

@@ -10,12 +10,8 @@
 #include "item.h"
 
 #include <string>
-#include <sstream>
 #include <unordered_map>
 #include "lib_json.hpp"
-
-
-#include <iostream>
 
 // TODO Write a constructor that takes one parameter, a string identifier
 //  and initialises the object and member data.
@@ -32,7 +28,7 @@ Item::Item(std::string identIdent) : identIdent(identIdent) {
 //  Item iObj{"identIdent"};
 //  auto size = iObj.size();
 unsigned int Item::size() const {
-    return itemEntires.size();
+    return itemEntries.size();
 }
 
 // TODO Write a function, empty, that takes no parameters and returns true
@@ -42,7 +38,7 @@ unsigned int Item::size() const {
 //  Item iObj{"identIdent"};
 //  auto empty = iObj.empty();
 bool Item::empty() {
-    return itemEntires.empty();
+    return itemEntries.empty();
 }
 
 // TODO Write a function, setIdent, that takes one parameter, a string for a new
@@ -72,11 +68,11 @@ std::string Item::getIdent() {
 //  Item iObj{"identIdent"};
 //  iObj.addEntry("key", "value");
 bool Item::addEntry(std::string key, std::string value) {
-    if (itemEntires.find(key) == itemEntires.end()) {
-        itemEntires.insert(std::pair<std::string,std::string> (key, value));
+    if (itemEntries.find(key) == itemEntries.end()) {
+        itemEntries.insert(std::pair<std::string,std::string> (key, value));
         return true;
     }
-    auto item = itemEntires.find(key);
+    auto item = itemEntries.find(key);
     item->second = value;
     return false;
 }
@@ -90,8 +86,8 @@ bool Item::addEntry(std::string key, std::string value) {
 //  iObj.addEntry("key", "value");
 //  auto value = iObj.getEntry("key");
 std::string Item::getEntry(std::string key) {
-    if (itemEntires.find(key) != itemEntires.end()) {
-        return itemEntires.at(key);
+    if (itemEntries.find(key) != itemEntries.end()) {
+        return itemEntries.at(key);
     }
     else {
         throw std::out_of_range("The entry " + key + " does not exist");
@@ -107,8 +103,8 @@ std::string Item::getEntry(std::string key) {
 //  iObj.addEntry("key", "value");
 //  iObj.deleteEntry("key");
 bool Item::deleteEntry(std::string key) {
-    if (itemEntires.find(key) != itemEntires.end()) {
-        itemEntires.erase(key);
+    if (itemEntries.find(key) != itemEntries.end()) {
+        itemEntries.erase(key);
         return true;
     }
     throw std::out_of_range("The entry " + key + " does not exist so cannot be deleted");
@@ -117,7 +113,7 @@ bool Item::deleteEntry(std::string key) {
 
 // Method to return all the entries of the item so it can be compared in the operator overload method.
 std::unordered_map<std::string, std::string> Item::getAllEntries() {
-    return itemEntires;
+    return itemEntries;
 }
 
 // TODO Write an == operator overload for the Item class, such that two
@@ -158,7 +154,7 @@ std::string Item::str() {
     using json = nlohmann::json;
     
     json entries;
-    for (auto entry = itemEntires.begin(); entry != itemEntires.end(); ++entry){
+    for (auto entry = itemEntries.begin(); entry != itemEntries.end(); ++entry){
         entries[entry->first] = entry->second;
     }
 
