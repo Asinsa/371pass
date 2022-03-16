@@ -69,7 +69,7 @@ std::string Item::getIdent() {
 //  iObj.addEntry("key", "value");
 bool Item::addEntry(std::string key, std::string value) {
     if (itemEntries.find(key) == itemEntries.end()) {
-        itemEntries.insert(std::pair<std::string,std::string> (key, value));
+        itemEntries.insert({key, value});
         return true;
     }
     auto item = itemEntries.find(key);
@@ -87,7 +87,7 @@ bool Item::addEntry(std::string key, std::string value) {
 //  auto value = iObj.getEntry("key");
 std::string Item::getEntry(std::string key) {
     if (itemEntries.find(key) != itemEntries.end()) {
-        return itemEntries.at(key);
+        return itemEntries[key];
     }
     else {
         throw std::out_of_range("The entry " + key + " does not exist");

@@ -13,8 +13,36 @@
 #ifndef CATEGORY_H
 #define CATEGORY_H
 
-class Category {
+#include <string>
+#include <unordered_map>
+#include "item.h"
 
+
+class Category {
+    private:
+    std::unordered_map<std::string, Item> categoryEntries;
+    std::string categoryIdent;
+
+    public:
+    Category(std::string categoryIdent);
+
+    unsigned int size() const;
+    bool empty();
+
+    std::string getIdent();
+    void setIdent(std::string newIdent);
+
+    Item& newItem(std::string itemIdent);
+    bool addItem(Item item);
+    Item& getItem(std::string itemIdent);
+
+    bool deleteItem(std::string itemIdent);
+
+    std::unordered_map<std::string, Item> getAllEntries();
+
+    friend bool operator==(Category& cObj1, Category& cObj2);
+
+    std::string str();
 };
 
 #endif // CATEGORY_H
