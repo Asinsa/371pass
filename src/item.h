@@ -40,7 +40,7 @@ class Item {
 
     std::unordered_map<std::string, std::string> getAllEntries();
 
-    friend bool operator==(const Item& iObj1, const Item& iObj2);
+    friend bool operator==(Item iObj1, Item iObj2);
 
     std::string str();
 };

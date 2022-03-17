@@ -127,7 +127,7 @@ std::unordered_map<std::string, std::string> Item::getAllEntries() {
 //  if(iObj1 == iObj2) {
 //    ...
 //  }
-bool operator==(Item& iObj1, Item& iObj2) {
+bool operator==(Item iObj1, Item iObj2) {
     if ((iObj1.getIdent() == iObj2.getIdent()) && (iObj1.size() == iObj2.size())) {
         unsigned int count = 0;
         for (auto entry = iObj1.getAllEntries().begin(); entry != iObj1.getAllEntries().end(); ++entry) {

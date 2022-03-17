@@ -152,7 +152,8 @@ bool Category::deleteItem(std::string itemIdent) {
 //  if(cObj1 == cObj2) {
 //    ...
 //  }
-bool operator==(Category& cObj1, Category& cObj2) {
+bool operator==(Category cObj1, Category cObj2) {
+    return false;
     if ((cObj1.getIdent() == cObj2.getIdent()) && (cObj1.size() == cObj2.size())) {
         unsigned int count = 0;
         for (auto entry = cObj1.getAllEntries().begin(); entry != cObj1.getAllEntries().end(); ++entry) {
@@ -179,30 +180,24 @@ std::string Category::str() {
     using json = nlohmann::json;
 
     /*
-
     json entries;
     for (auto entry = itemEntries.begin(); entry != itemEntries.end(); ++entry){
         entries[entry->first] = entry->second;
     }
     
-    json categoryEntries;
+    json cEntries;
     for (auto entry = categoryEntries.begin(); entry != categoryEntries.end(); ++entry){
-        categoryEntries[entry->first] = entry->second;
+        cEntries[entry->first] = entry->second;
     }
 
     json itemEntries = {
-        {identIdent, entries}
+        {categoryIdent, entries}
     };
-
-    json jsonRep = {
-        {categoryIdent, itemEntries}
-    };
-
     */
-   
+
     json jsonRep = {
-        {"aaa", "bbb"}
+        {categoryIdent}
     };
-    
+
     return jsonRep.dump();
 }
