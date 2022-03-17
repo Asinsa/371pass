@@ -87,7 +87,7 @@ bool Item::addEntry(std::string key, std::string value) {
 //  auto value = iObj.getEntry("key");
 std::string Item::getEntry(std::string key) {
     if (itemEntries.find(key) != itemEntries.end()) {
-        return itemEntries[key];
+        return itemEntries.at(key);
     }
     else {
         throw std::out_of_range("The entry " + key + " does not exist");

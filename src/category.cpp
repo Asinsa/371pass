@@ -76,7 +76,7 @@ Item& Category::newItem(std::string itemIdent) {
         categoryEntries.insert({itemIdent, Item(itemIdent)});
     }
     // Add runtime error
-    return categoryEntries[itemIdent];
+    return categoryEntries.at(itemIdent);
 }
 
 // TODO Write a function, addItem, that takes one parameter, an Item object,
@@ -112,7 +112,7 @@ bool Category::addItem(Item item) {
 //  auto iObj = cObj.getItem("itemIdent");
 Item& Category::getItem(std::string itemIdent) {
     if (categoryEntries.find(itemIdent) != categoryEntries.end()) {
-        return categoryEntries[itemIdent];
+        return categoryEntries.at(itemIdent);
     }
     else {
         throw std::out_of_range("The item with identifier " + itemIdent + " does not exist");
