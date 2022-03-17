@@ -39,7 +39,6 @@ class Item {
     bool deleteEntry(std::string key);
 
     std::unordered_map<std::string, std::string> getAllEntries();
-
     friend bool operator==(Item iObj1, Item iObj2);
 
     std::string str();
