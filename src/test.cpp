@@ -5,7 +5,6 @@ int main(int argc, char *argv[]) {
 
     Wallet wObj{};
 
-    /*
     Category cObj("categoryIdent");
     Item iObj("item 1");
     iObj.addEntry("entry 1", "TEST1");
@@ -28,9 +27,8 @@ int main(int argc, char *argv[]) {
 
     wObj.addCategory(cObj);
     wObj.addCategory(cObj1);
-    */
 
-    wObj.load("database.json");
+    wObj.save("src/myfile.json");
 
     //wObj.str();
 

@@ -215,10 +215,10 @@ void Wallet::load(std::string filename) {
 //  wObj.save("database.json");
 void Wallet::save(std::string filename) {
     std::ofstream output(filename);
-    json j;
 
+    json wallet = json::parse(str());
 
-    output << std::setw(4) << j << std::endl;
+    output << std::setw(0) << wallet << std::endl;
 }
 
 
