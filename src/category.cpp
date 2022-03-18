@@ -61,7 +61,6 @@ void Category::setIdent(std::string newCategoryIdent) {
     this->categoryIdent = newCategoryIdent;
 }
 
-// ======================================--CHECK THIS COS RUNTIME EROR ISNT HERE --=======================================
 // TODO Write a function, newItem, that takes one parameter, an Item identifier,
 //  (a string) and returns the Item object as a reference. If an object with the
 //  same identifier already exists, then the existing object should be returned.
@@ -73,9 +72,12 @@ void Category::setIdent(std::string newCategoryIdent) {
 //  cObj.newItem("itemIdent");
 Item& Category::newItem(std::string itemIdent) {
     if (categoryEntries.find(itemIdent) == categoryEntries.end()) {
-        categoryEntries.insert({itemIdent, Item(itemIdent)});
+        try {
+            categoryEntries.insert({itemIdent, Item(itemIdent)});
+        } catch (...) {
+            throw std::runtime_error("Item object " + itemIdent + "cannot be inserted into container");
+        }
     }
-    // Add runtime error
     return categoryEntries.at(itemIdent);
 }
 
@@ -89,11 +91,10 @@ Item& Category::newItem(std::string itemIdent) {
 //  Item iObj{"itemIdent"};
 //  cObj.addItem(iObj);
 bool Category::addItem(Item item) {
-    for (auto entry = categoryEntries.begin(); entry != categoryEntries.end(); ++entry){
-        if (entry->second == item) {
-            // Merge contents
-            return false;
-        }
+    if (categoryEntries.find(item.getIdent()) != categoryEntries.end()) {
+        // MIGHT BE WRONG PLZ LOOK OVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        categoryEntries.at(item.getIdent()).getAllEntries().insert(item.getAllEntries().begin(), item.getAllEntries().end());
+        return false;
     }
     categoryEntries.insert({item.getIdent(), item});
     return true;
@@ -117,11 +118,6 @@ Item& Category::getItem(std::string itemIdent) {
     else {
         throw std::out_of_range("The item with identifier " + itemIdent + " does not exist");
     }
-}
-
-// Method to return all the entries of the item so it can be compared in the operator overload method.
-std::unordered_map<std::string, Item> Category::getAllEntries() {
-    return categoryEntries;
 }
 
 // TODO Write a function, deleteItem, that takes one parameter, an Item
@@ -167,24 +163,19 @@ bool operator==(const Category& cObj1, const Category& cObj2) {
 std::string Category::str() {
     using json = nlohmann::json;
 
-    /*
-    json entries;
-    for (auto entry = itemEntries.begin(); entry != itemEntries.end(); ++entry){
-        entries[entry->first] = entry->second;
-    }
-    
     json cEntries;
-    for (auto entry = categoryEntries.begin(); entry != categoryEntries.end(); ++entry){
-        cEntries[entry->first] = entry->second;
+    for (auto cEntry = categoryEntries.begin(); cEntry != categoryEntries.end(); ++cEntry){
+        json iEntries;
+        for (auto iEntry = cEntry->second.getAllEntries().begin(); iEntry != cEntry->second.getAllEntries().end(); ++iEntry){
+            iEntries[iEntry->first] = iEntry->second;
+        }
+        cEntries[cEntry->first] = iEntries;
     }
-
-    json itemEntries = {
-        {categoryIdent, entries}
-    };
-    */
 
     json jsonRep = {
-        {categoryIdent}
+        {categoryIdent, {
+            cEntries
+        }}
     };
 
     return jsonRep.dump();
