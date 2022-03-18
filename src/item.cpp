@@ -127,19 +127,8 @@ std::unordered_map<std::string, std::string> Item::getAllEntries() {
 //  if(iObj1 == iObj2) {
 //    ...
 //  }
-bool operator==(Item iObj1, Item iObj2) {
-    if ((iObj1.getIdent() == iObj2.getIdent()) && (iObj1.size() == iObj2.size())) {
-        unsigned int count = 0;
-        for (auto entry = iObj1.getAllEntries().begin(); entry != iObj1.getAllEntries().end(); ++entry) {
-            if (entry->second == iObj2.getEntry(entry->first)) {
-                count++;
-            }
-        }
-        if (count == iObj1.size()) {
-            return true;
-        }
-    }
-    return false;
+bool operator==(const Item& iObj1, const Item& iObj2) {
+    return ((iObj1.identIdent == iObj2.identIdent) && (iObj1.itemEntries == iObj2.itemEntries));
 }
 
 // TODO Write a function, str, that takes no parameters and returns a
