@@ -13,6 +13,8 @@
 #include <unordered_map>
 #include "lib_json.hpp"
 
+using nlohmann::json;
+
 // TODO Write a constructor that takes one parameter, a string identifier
 //  and initialises the object and member data.
 //
@@ -147,8 +149,6 @@ bool operator==(const Item& iObj1, const Item& iObj2) {
 //  Item iObj{"itemIdent"};
 //  std::string s = iObj.str();
 std::string Item::str() {
-    using json = nlohmann::json;
-    
     json entries;
     for (auto entry = itemEntries.begin(); entry != itemEntries.end(); ++entry){
         entries[entry->first] = entry->second;

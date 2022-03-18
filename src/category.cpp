@@ -12,6 +12,8 @@
 #include <string>
 #include <unordered_map>
 #include "lib_json.hpp"
+using nlohmann::json;
+
 
 // TODO Write a constructor that takes one parameter, a string identifier
 //  and initialises the object and member data.
@@ -157,6 +159,7 @@ bool operator==(const Category& cObj1, const Category& cObj2) {
     return ((cObj1.categoryIdent == cObj2.categoryIdent) && (cObj1.categoryEntries == cObj2.categoryEntries));
 }
 
+#include <iostream>
 // TODO Write a function, str, that takes no parameters and returns a
 //  std::string of the JSON representation of the data in the Category.
 //
@@ -166,21 +169,19 @@ bool operator==(const Category& cObj1, const Category& cObj2) {
 //  Category cObj{"categoryIdent"};
 //  std::string s = cObj.str();
 std::string Category::str() {
-    using json = nlohmann::json;
+    json items;
+    for(auto item = categoryEntries.begin(); item != categoryEntries.end(); item++) {
+        std::unordered_map<std::string, std::string> itemEntries = item->second.getAllEntries();
+        json entries;
+        for(auto entry = itemEntries.begin(); entry != itemEntries.end(); entry++) {
+            entries[entry->first] = entry->second;
 
-    json cEntries;
-    for (auto cEntry = categoryEntries.begin(); cEntry != categoryEntries.end(); ++cEntry){
-        json iEntries;
-        for (auto iEntry = cEntry->second.getAllEntries().begin(); iEntry != cEntry->second.getAllEntries().end(); ++iEntry){
-            iEntries[iEntry->first] = iEntry->second;
         }
-        cEntries[cEntry->first] = iEntries;
+        items[item->first] = entries;
     }
 
     json jsonRep = {
-        {categoryIdent, {
-            cEntries
-        }}
+        {categoryIdent, items}
     };
 
     return jsonRep.dump();
