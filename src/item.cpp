@@ -68,13 +68,20 @@ std::string Item::getIdent() {
 //  Item iObj{"identIdent"};
 //  iObj.addEntry("key", "value");
 bool Item::addEntry(std::string key, std::string value) {
+    bool alreadyExists = true;
+    if (itemEntries.count(key)>0) {
+        alreadyExists = false;
+    }
+    itemEntries[key] = value;
+    return alreadyExists;
+
+    /*
     if (itemEntries.find(key) == itemEntries.end()) {
         itemEntries.insert({key, value});
         return true;
     }
-    auto item = itemEntries.find(key);
-    item->second = value;
     return false;
+    */
 }
 
 // TODO Write a function, getEntry, that takes one parameter, an entry
