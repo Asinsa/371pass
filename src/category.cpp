@@ -137,6 +137,11 @@ bool Category::deleteItem(std::string itemIdent) {
     return false;
 }
 
+// Method to return all the entries of the category
+std::unordered_map<std::string, Item> Category::getAllEntries() {
+    return categoryEntries;
+}
+
 // TODO Write an == operator overload for the Category class, such that two
 //  Category objects are equal only if they have the same identifier and same
 //  Items.

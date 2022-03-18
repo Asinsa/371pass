@@ -118,7 +118,7 @@ bool Item::deleteEntry(std::string key) {
     return false;
 }
 
-// Method to return all the entries of the item so it can be compared in the operator overload method.
+// Method to return all the entries of the item
 std::unordered_map<std::string, std::string> Item::getAllEntries() {
     return itemEntries;
 }

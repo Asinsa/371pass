@@ -9,11 +9,17 @@
 
 #include "wallet.h"
 
+#include <string>
+#include <unordered_map>
+#include "lib_json.hpp"
+
 // TODO Write a Wallet constructor that takes no parameters and constructs an
 //  empty wallet.
 //
 // Example:
 //  Wallet wObj{};
+Wallet::Wallet() {
+}
 
 // TODO Write a function, size, that takes no parameters and returns an unsigned
 //  int of the number of categories in the Wallet contains.
@@ -21,6 +27,9 @@
 // Example:
 //  Wallet wObj{};
 //  auto size = wObj.size();
+unsigned int Wallet::size() const {
+    return walletEntries.size();
+}
 
 // TODO Write a function, empty, that takes no parameters and returns true
 //  if the number of categories in the Wallet is zero, false otherwise.
@@ -28,6 +37,9 @@
 // Example:
 //  Wallet wwObj{};
 //  auto isEmpty = wObj.empty();
+bool Wallet::empty() {
+    return walletEntries.empty();
+}
 
 // TODO Write a function, newCategory, that takes one parameter, a category
 //  identifier, and returns the Category object as a reference. If an object
@@ -38,6 +50,16 @@
 // Example:
 //  Wallet wObj{};
 //  wObj.newCategory("categoryIdent");
+Category& Wallet::newCategory(std::string categoryIdent) {
+    if (walletEntries.find(categoryIdent) == walletEntries.end()) {
+        try {
+            walletEntries.insert({categoryIdent, Category(categoryIdent)});
+        } catch (...) {
+            throw std::runtime_error("Item object " + categoryIdent + "cannot be inserted into container");
+        }
+    }
+    return walletEntries.at(categoryIdent);
+}
 
 // TODO Write a function, addCategory, that takes one parameter, a Category
 //  object, and returns true if the object was successfully inserted. If an
@@ -49,6 +71,15 @@
 //  Wallet wObj{};
 //  Category cObj{"categoryIdent"};
 //  wObj.addCategory(cObj);
+bool Wallet::addCategory(Category category) {
+    if (walletEntries.find(category.getIdent()) != walletEntries.end()) {
+        // MIGHT BE WRONG PLZ LOOK OVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        walletEntries.at(category.getIdent()).getAllEntries().insert(category.getAllEntries().begin(), category.getAllEntries().end());
+        return false;
+    }
+    walletEntries.insert({category.getIdent(), category});
+    return true;
+}
 
 // TODO Write a function, getCategory, that takes one parameter, a Category
 //  identifier and returns the Category. If no Category exists, throw an
@@ -58,6 +89,14 @@
 //  Wallet wObj{};
 //  wObj.newCategory("categoryIdent");
 //  auto cObj = wObj.getCategory("categoryIdent");
+Category& Wallet::getCategory(std::string categoryIdent) {
+    if (walletEntries.find(categoryIdent) != walletEntries.end()) {
+        return walletEntries.at(categoryIdent);
+    }
+    else {
+        throw std::out_of_range("The item with identifier " + categoryIdent + " does not exist");
+    }
+}
 
 // TODO Write a function, deleteCategory, that takes one parameter, a Category
 //  identifier, and deletes it from the container, and returns true if the
@@ -67,6 +106,14 @@
 //  Wallet wObj{};
 //  wObj.newCategory("categoryIdent");
 //  wObj.deleteCategory("categoryIdent");
+bool Wallet::deleteCategory(std::string categoryIdent) {
+    if (walletEntries.find(categoryIdent) != walletEntries.end()) {
+        walletEntries.erase(categoryIdent);
+        return true;
+    }
+    throw std::out_of_range("The entry " + categoryIdent + " does not exist so cannot be deleted");
+    return false;
+}
 
 // TODO Write a function, load, that takes one parameter, a std::string,
 //  containing the filename for the database. Open the file, read the contents,
@@ -128,6 +175,7 @@
 //  Wallet wObj{};
 //  wObj.load("database.json");
 
+
 // TODO Write a function ,save, that takes one parameter, the path of the file
 //  to write the database to. The function should serialise the Wallet object
 //  as JSON.
@@ -147,6 +195,9 @@
 //  if(wObj1 == wObj2) {
 //    ...
 //  }
+bool operator==(const Wallet& wObj1, const Wallet& wObj2) {
+    return (wObj1.walletEntries == wObj2.walletEntries);
+}
 
 // TODO Write a function, str, that takes no parameters and returns a
 //  std::string of the JSON representation of the data in the Wallet.
@@ -157,3 +208,12 @@
 // Example:
 //  Wallet wObj{};
 //  std::string s = wObj.str();
+std::string Wallet::str() {
+    using json = nlohmann::json;
+
+    json jsonRep = {
+        {"test"}
+    };
+
+    return jsonRep.dump();
+}
