@@ -152,20 +152,8 @@ bool Category::deleteItem(std::string itemIdent) {
 //  if(cObj1 == cObj2) {
 //    ...
 //  }
-bool operator==(Category cObj1, Category cObj2) {
-    return false;
-    if ((cObj1.getIdent() == cObj2.getIdent()) && (cObj1.size() == cObj2.size())) {
-        unsigned int count = 0;
-        for (auto entry = cObj1.getAllEntries().begin(); entry != cObj1.getAllEntries().end(); ++entry) {
-            if (entry->second == cObj2.getItem(entry->first)) {
-                count++;
-            }
-        }
-        if (count == cObj1.size()) {
-            return true;
-        }
-    }
-    return false;
+bool operator==(const Category& cObj1, const Category& cObj2) {
+    return ((cObj1.categoryIdent == cObj2.categoryIdent) && (cObj1.categoryEntries == cObj2.categoryEntries));
 }
 
 // TODO Write a function, str, that takes no parameters and returns a
