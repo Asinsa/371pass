@@ -11,7 +11,13 @@
 
 #include <string>
 #include <unordered_map>
+#include <iostream>
+#include <fstream>
+#include <iomanip>
 #include "lib_json.hpp"
+using nlohmann::json;
+
+#include <iostream>
 
 // TODO Write a Wallet constructor that takes no parameters and constructs an
 //  empty wallet.
@@ -174,6 +180,28 @@ bool Wallet::deleteCategory(std::string categoryIdent) {
 // Example:
 //  Wallet wObj{};
 //  wObj.load("database.json");
+void Wallet::load(std::string filename) {
+    try {
+        std::ifstream input(filename);
+        json jsonWallet;
+        input >> jsonWallet;
+        
+        for (auto category : jsonWallet.items()) {
+            Category newCategory(category.key());
+            for (auto item : category.value().items()) {
+                Item newItem(item.key());
+                for (auto& entry : item.value().items()) {
+                    newItem.addEntry(entry.key(), entry.value());
+                }
+                newCategory.addItem(newItem);
+            }
+            addCategory(newCategory);
+        }
+    } catch (...) {
+        std::runtime_error("File " + filename + "cannot be opened");
+    }
+
+}
 
 
 // TODO Write a function ,save, that takes one parameter, the path of the file
@@ -185,6 +213,14 @@ bool Wallet::deleteCategory(std::string categoryIdent) {
 //  wObj.load("database.json");
 //  ...
 //  wObj.save("database.json");
+void Wallet::save(std::string filename) {
+    std::ofstream output(filename);
+    json j;
+
+
+    output << std::setw(4) << j << std::endl;
+}
+
 
 // TODO Write an == operator overload for the Wallet class, such that two
 //  Wallet objects are equal only if they have the exact same data.
@@ -209,11 +245,19 @@ bool operator==(const Wallet& wObj1, const Wallet& wObj2) {
 //  Wallet wObj{};
 //  std::string s = wObj.str();
 std::string Wallet::str() {
-    using json = nlohmann::json;
-
-    json jsonRep = {
-        {"test"}
-    };
-
-    return jsonRep.dump();
+    json categories;
+    for(auto category = walletEntries.begin(); category != walletEntries.end(); category++) {
+        std::unordered_map<std::string, Item> categoryEntries = category->second.getAllEntries();
+        json items;
+        for(auto item = categoryEntries.begin(); item != categoryEntries.end(); item++) {
+            std::unordered_map<std::string, std::string> itemEntries = item->second.getAllEntries();
+            json entries;
+            for(auto entry = itemEntries.begin(); entry != itemEntries.end(); entry++) {
+                entries[entry->first] = entry->second;
+            }
+            items[item->first] = entries;
+        }
+        categories[category->first] = items;
+    }
+    return categories.dump();
 }

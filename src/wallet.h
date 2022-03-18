@@ -34,6 +34,9 @@ class Wallet {
 
     bool deleteCategory(std::string categoryIdent);
 
+    void load(std::string filename);
+    void save(std::string filename);
+
     friend bool operator==(const Wallet& wObj1, const Wallet& wObj2);
 
     std::string str();
