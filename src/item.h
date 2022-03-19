@@ -31,7 +31,7 @@ class Item {
     bool empty();
 
     void setIdent(std::string newIdent);
-    std::string getIdent();
+    std::string getIdent() const;
 
     bool addEntry(std::string key, std::string value);
     std::string getEntry(std::string key);
@@ -41,7 +41,7 @@ class Item {
     std::unordered_map<std::string, std::string> getAllEntries();
     friend bool operator==(const Item& iObj1, const Item& iObj2);
 
-    std::string str();
+    std::string str() const;
 };
 
 #endif // ITEM_H

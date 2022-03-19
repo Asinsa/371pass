@@ -58,7 +58,7 @@ void Item::setIdent(std::string newIdent) {
 // Example:
 //  Item iObj{"identIdent"};
 //  auto ident = iObj.getIdent();
-std::string Item::getIdent() {
+std::string Item::getIdent() const {
     return identIdent;
 }
 
@@ -148,7 +148,7 @@ bool operator==(const Item& iObj1, const Item& iObj2) {
 // Example:
 //  Item iObj{"itemIdent"};
 //  std::string s = iObj.str();
-std::string Item::str() {
+std::string Item::str() const {
     json entries;
     for (auto entry = itemEntries.begin(); entry != itemEntries.end(); ++entry){
         entries[entry->first] = entry->second;

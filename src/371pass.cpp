@@ -49,7 +49,7 @@ int App::run(int argc, char *argv[]) {
   const std::string db = args["db"].as<std::string>();
   Wallet wObj{};
   // Only uncomment this once you have implemented the load function!
-  // wObj.load(db);
+  wObj.load(db);
 
   const Action a = parseActionArgument(args);
   switch (a) {
@@ -58,7 +58,7 @@ int App::run(int argc, char *argv[]) {
     break;
 
   case Action::READ:
-    throw std::runtime_error("read not implemented");
+    std::cout << wObj.str() << '\n';
     break;
 
   case Action::UPDATE:
@@ -155,9 +155,9 @@ App::Action App::parseActionArgument(cxxopts::ParseResult &args) {
 //  Wallet wObj{};
 //  std::cout << getJSON(wObj);
 std::string App::getJSON(Wallet &wObj) { 
-  return "{}";
+  // return "{}";
   // Only uncomment this once you have implemented the functions used!
-  // return wObj.str();
+   return wObj.str();
 }
 
 // TODO Write a function, getJSON, that returns a std::string containing the
@@ -173,10 +173,10 @@ std::string App::getJSON(Wallet &wObj) {
 //  std::string c = "category argument value";
 //  std::cout << getJSON(wObj, c);
 std::string App::getJSON(Wallet &wObj, const std::string &c) {
-  return "{}";
+  // return "{}";
   // Only uncomment this once you have implemented the functions used!
-  // auto cObj = wObj.getCategory(c);
-  // return cObj.str();
+  auto cObj = wObj.getCategory(c);
+  return cObj.str();
 }
 
 // TODO Write a function, getJSON, that returns a std::string containing the
@@ -194,11 +194,11 @@ std::string App::getJSON(Wallet &wObj, const std::string &c) {
 //  std::cout << getJSON(wObj, c, i);
 std::string App::getJSON(Wallet &wObj, const std::string &c,
                          const std::string &i) {
-  return "{}";
+  // return "{}";
   // Only uncomment this once you have implemented the functions used!
-  // auto cObj = wObj.getCategory(c);
-  // const auto iObj = cObj.getItem(i);
-  // return iObj.str();
+  auto cObj = wObj.getCategory(c);
+  const auto iObj = cObj.getItem(i);
+  return iObj.str();
 }
 
 // TODO Write a function, getJSON, that returns a std::string containing the
@@ -217,9 +217,9 @@ std::string App::getJSON(Wallet &wObj, const std::string &c,
 //  std::cout << getJSON(wObj, c, i, e);
 std::string App::getJSON(Wallet &wObj, const std::string &c,
                          const std::string &i, const std::string &e) {
-  return "{}";
+  // return "{}";
   // Only uncomment this once you have implemented the functions used!
-  // auto cObj = wObj.getCategory(c);
-  // auto iObj = cObj.getItem(i);
-  // return iObj.getEntry(e);
+  auto cObj = wObj.getCategory(c);
+  auto iObj = cObj.getItem(i);
+  return iObj.getEntry(e);
 }
