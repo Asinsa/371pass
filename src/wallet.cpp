@@ -79,8 +79,12 @@ Category& Wallet::newCategory(std::string categoryIdent) {
 //  wObj.addCategory(cObj);
 bool Wallet::addCategory(Category category) {
     if (walletEntries.find(category.getIdent()) != walletEntries.end()) {
-        // MIGHT BE WRONG PLZ LOOK OVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        walletEntries.at(category.getIdent()).getAllEntries().insert(category.getAllEntries().begin(), category.getAllEntries().end());
+        auto combinedCategory = getCategory(category.getIdent());
+        deleteCategory(combinedCategory.getIdent());
+        for(auto item = category.getAllEntries().begin(); item != category.getAllEntries().end(); item++) {
+            combinedCategory.addItem(item->second);
+        }
+        addCategory(combinedCategory);
         return false;
     }
     walletEntries.insert({category.getIdent(), category});
@@ -100,7 +104,7 @@ Category& Wallet::getCategory(std::string categoryIdent) {
         return walletEntries.at(categoryIdent);
     }
     else {
-        throw std::out_of_range("The item with identifier " + categoryIdent + " does not exist");
+        throw std::out_of_range("The category with identifier " + categoryIdent + " does not exist");
     }
 }
 

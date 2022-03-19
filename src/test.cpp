@@ -1,8 +1,18 @@
 #include "wallet.h"
 #include <iostream>
 
+
+#include "371pass.h"
+
 int main(int argc, char *argv[]) {
 
+    return App::run(argc, argv);
+
+    //Wallet wObj{};
+    //wObj.load("database.json");
+    //std::cout << wObj.str() << std::endl;
+
+    /*
     Wallet wObj{};
 
     Category cObj("categoryIdent");
@@ -29,6 +39,7 @@ int main(int argc, char *argv[]) {
     wObj.addCategory(cObj1);
 
     wObj.save("src/myfile.json");
+    */
 
     //wObj.str();
 

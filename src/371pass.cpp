@@ -51,10 +51,11 @@ int App::run(int argc, char *argv[]) {
   // Only uncomment this once you have implemented the load function!
   wObj.load(db);
 
+  // Possible actions
   const Action a = parseActionArgument(args);
   switch (a) {
   case Action::CREATE:
-    throw std::runtime_error("create not implemented");
+    create(db, args, wObj);
     break;
 
   case Action::READ:
@@ -74,6 +75,37 @@ int App::run(int argc, char *argv[]) {
   }
 
   return 0;
+}
+
+void App::create(const std::string db, cxxopts::ParseResult &args, Wallet wObj) {
+  if (args.count("category") > 0) {
+    // Gets the category & makes object
+    std::string category = args["category"].as<std::string>();
+    Category newCategory(category);
+
+    if (args.count("item") > 0) {
+      // Gets the item & makes object
+      std::string item = args["item"].as<std::string>();
+      Item newItem(item);
+
+      if (args.count("entry") > 0) {
+        // Gets entry
+        std::istringstream entry(args["entry"].as<std::string>());
+        std::vector<std::string> keyValue;                                                                                                                                                           
+        std::string split;
+        while (std::getline(entry, split, ',')){
+          keyValue.push_back(split);
+        }
+        newItem.addEntry(keyValue.at(0), keyValue.at(1));
+      }
+      newCategory.addItem(newItem);
+    }
+    wObj.addCategory(newCategory);
+    wObj.save(db);
+  } 
+  else {
+    throw std::out_of_range("Error: missing category, item or entry argument(s).");
+  }
 }
 
 // Create a cxxopts instance. You do not need to modify this function.

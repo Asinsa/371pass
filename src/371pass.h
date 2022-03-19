@@ -44,9 +44,13 @@ enum Action { CREATE, READ, UPDATE, DELETE };
 
 int run(int argc, char *argv[]);
 
+void action(cxxopts::ParseResult &args);
+
 cxxopts::Options cxxoptsSetup();
 
 App::Action parseActionArgument(cxxopts::ParseResult &args);
+
+void create(const std::string db, cxxopts::ParseResult &args, Wallet wObj);
 
 std::string getJSON(Wallet &w);
 std::string getJSON(Wallet &w, const std::string &c);
