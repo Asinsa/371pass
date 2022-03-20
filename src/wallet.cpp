@@ -79,12 +79,11 @@ Category& Wallet::newCategory(std::string categoryIdent) {
 //  wObj.addCategory(cObj);
 bool Wallet::addCategory(Category category) {
     if (walletEntries.find(category.getIdent()) != walletEntries.end()) {
-        auto combinedCategory = getCategory(category.getIdent());
-        deleteCategory(combinedCategory.getIdent());
-        for(auto item = category.getAllEntries().begin(); item != category.getAllEntries().end(); item++) {
-            combinedCategory.addItem(item->second);
+        if (!(category == getCategory(category.getIdent()))) {
+            for (auto item : category.getAllEntries()) {
+                walletEntries.at(category.getIdent()).addItem(item.second);
+            }
         }
-        addCategory(combinedCategory);
         return false;
     }
     walletEntries.insert({category.getIdent(), category});

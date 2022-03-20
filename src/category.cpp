@@ -14,6 +14,7 @@
 #include "lib_json.hpp"
 using nlohmann::json;
 
+#include <iostream>
 
 // TODO Write a constructor that takes one parameter, a string identifier
 //  and initialises the object and member data.
@@ -94,12 +95,12 @@ Item& Category::newItem(std::string itemIdent) {
 //  cObj.addItem(iObj);
 bool Category::addItem(Item item) {
     if (categoryEntries.find(item.getIdent()) != categoryEntries.end()) {
-        auto combinedItem = getItem(item.getIdent());
-        deleteItem(combinedItem.getIdent());
-        for(auto entry = item.getAllEntries().begin(); entry != item.getAllEntries().end(); entry++) {
-            combinedItem.addEntry(entry->first, entry->second);
+        if (!(item == getItem(item.getIdent()))) {
+            std::cout << "part inside iterm 1  " << item.str() << '\n';
+            for (auto entry : item.getAllEntries()) {
+                categoryEntries.at(item.getIdent()).addEntry(entry.first, entry.second);
+            }
         }
-        addItem(combinedItem);
         return false;
     }
     categoryEntries.insert({item.getIdent(), item});
