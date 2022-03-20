@@ -31,7 +31,7 @@
 // Some commented out code has been provided. Using some of this will be
 // demonstrated in the coursework video on Canvas. Remember, this coursework is
 // meant to be challenging and testing your understanding of programming in C++.
-// Part of the challenge is figu  std::cout << input << '\n';ring things out on your own. That is a major
+// Part of the challenge is figuring things out on your own. That is a major
 // part of software development.
 //
 // Example:
@@ -105,13 +105,20 @@ void App::read(cxxopts::ParseResult &args, Wallet wObj) {
                 }
                 std::cout << (wObj.getCategory(category).getItem(item)).str() << '\n';
 				return;
-            }
+            } else if (args.count("entry") > 0) {
+				std::cerr << "Error: missing item argument(s)." << '\n';
+				exit(1);
+			}
             std::cout << (wObj.getCategory(category)).str() << '\n';
 			return;
         } catch (...) {
-            throw std::invalid_argument("invalid " + error + " arguement(s)");
+            std::cerr << "Error: invalid " << error << " argument(s)." << '\n';
+			exit(1);
         }
-    } else {
+    } else if (args.count("item") > 0 || args.count("entry") > 0) {
+		std::cerr << "Error: missing category argument(s)." << '\n';
+		exit(1);
+	} else {
         std::cout << wObj.str() << '\n';
     }
 }
@@ -143,7 +150,7 @@ void App::create(const std::string db, cxxopts::ParseResult &args, Wallet wObj) 
         wObj.addCategory(newCategory);
         wObj.save(db);
     } else {
-        throw std::out_of_range("Error: missing category, item or entry argument(s).");
+        std::cerr << "Error: missing category, item or entry argument(s)." << '\n';
     }
 }
 
