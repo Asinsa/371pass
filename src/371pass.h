@@ -50,6 +50,7 @@ cxxopts::Options cxxoptsSetup();
 
 App::Action parseActionArgument(cxxopts::ParseResult &args);
 
+void read(cxxopts::ParseResult &args, Wallet wObj);
 void create(const std::string db, cxxopts::ParseResult &args, Wallet wObj);
 
 std::string getJSON(Wallet &w);

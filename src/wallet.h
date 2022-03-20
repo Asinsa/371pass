@@ -29,6 +29,7 @@ class Wallet {
     bool empty();
 
     Category& newCategory(std::string categoryIdent);
+    bool exists(Category category);
     bool addCategory(Category category);
     Category& getCategory(std::string categoryIdent);
 

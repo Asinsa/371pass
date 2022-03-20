@@ -33,6 +33,7 @@ class Category {
     void setIdent(std::string newIdent);
 
     Item& newItem(std::string itemIdent);
+    bool exists(Item item);
     bool addItem(Item item);
     Item& getItem(std::string itemIdent);
 

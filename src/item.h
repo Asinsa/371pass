@@ -33,6 +33,7 @@ class Item {
     void setIdent(std::string newIdent);
     std::string getIdent() const;
 
+    bool exists(std::string key);
     bool addEntry(std::string key, std::string value);
     std::string getEntry(std::string key);
 

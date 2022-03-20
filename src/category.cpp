@@ -84,6 +84,14 @@ Item& Category::newItem(std::string itemIdent) {
     return categoryEntries.at(itemIdent);
 }
 
+// Method to check if item exists in category
+bool Category::exists(Item item) {
+    if (categoryEntries.find(item.getIdent()) != categoryEntries.end()) {
+        return true;
+    } 
+    return false;
+}
+
 // TODO Write a function, addItem, that takes one parameter, an Item object,
 //  and returns true if the object was successfully inserted. If an object with
 //  the same identifier already exists, then the contents should be merged and
@@ -94,9 +102,8 @@ Item& Category::newItem(std::string itemIdent) {
 //  Item iObj{"itemIdent"};
 //  cObj.addItem(iObj);
 bool Category::addItem(Item item) {
-    if (categoryEntries.find(item.getIdent()) != categoryEntries.end()) {
+    if (exists(item)) {
         if (!(item == getItem(item.getIdent()))) {
-            std::cout << "part inside iterm 1  " << item.str() << '\n';
             for (auto entry : item.getAllEntries()) {
                 categoryEntries.at(item.getIdent()).addEntry(entry.first, entry.second);
             }
@@ -184,10 +191,5 @@ std::string Category::str() {
         }
         items[item->first] = entries;
     }
-
-    json jsonRep = {
-        {categoryIdent, items}
-    };
-
-    return jsonRep.dump();
+    return items.dump();
 }

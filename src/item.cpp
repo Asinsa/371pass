@@ -62,6 +62,14 @@ std::string Item::getIdent() const {
     return identIdent;
 }
 
+// Method to check if entry exists in item
+bool Item::exists(std::string key) {
+    if (itemEntries.count(key)>0) {
+        return true;
+    }
+    return false;
+}
+
 // TODO Write a function, addEntry, that takes two parameters, an entry
 //  key and value and returns true if the entry was inserted into the
 //  container or false if the entry already existed and was replaced.
@@ -70,20 +78,9 @@ std::string Item::getIdent() const {
 //  Item iObj{"identIdent"};
 //  iObj.addEntry("key", "value");
 bool Item::addEntry(std::string key, std::string value) {
-    bool alreadyExists = true;
-    if (itemEntries.count(key)>0) {
-        alreadyExists = false;
-    }
+    bool doesItExist = exists(key);
     itemEntries[key] = value;
-    return alreadyExists;
-
-    /*
-    if (itemEntries.find(key) == itemEntries.end()) {
-        itemEntries.insert({key, value});
-        return true;
-    }
-    return false;
-    */
+    return !doesItExist;
 }
 
 // TODO Write a function, getEntry, that takes one parameter, an entry
@@ -153,10 +150,5 @@ std::string Item::str() const {
     for (auto entry = itemEntries.begin(); entry != itemEntries.end(); ++entry){
         entries[entry->first] = entry->second;
     }
-
-    json jsonRep = {
-        {identIdent, entries}
-    };
-
-    return jsonRep.dump();
+    return entries.dump();
 }

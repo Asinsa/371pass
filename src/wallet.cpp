@@ -67,6 +67,13 @@ Category& Wallet::newCategory(std::string categoryIdent) {
     return walletEntries.at(categoryIdent);
 }
 
+bool Wallet::exists(Category category) {
+    if (walletEntries.find(category.getIdent()) != walletEntries.end()) {
+        return true;
+    }
+    return false;
+}
+
 // TODO Write a function, addCategory, that takes one parameter, a Category
 //  object, and returns true if the object was successfully inserted. If an
 //  object with the same identifier already exists, then the contents should be
@@ -78,7 +85,7 @@ Category& Wallet::newCategory(std::string categoryIdent) {
 //  Category cObj{"categoryIdent"};
 //  wObj.addCategory(cObj);
 bool Wallet::addCategory(Category category) {
-    if (walletEntries.find(category.getIdent()) != walletEntries.end()) {
+    if (exists(category)) {
         if (!(category == getCategory(category.getIdent()))) {
             for (auto item : category.getAllEntries()) {
                 walletEntries.at(category.getIdent()).addItem(item.second);
