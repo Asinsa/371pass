@@ -74,11 +74,14 @@ int App::run(int argc, char *argv[]) {
                 break;
 
             default:
-                std::cerr << "Error: invalid action argument(s)." << '\n';
+                throw std::invalid_argument("action");
                 return 1;
         }
     } catch (const std::invalid_argument& inv) {
-        std::cerr << "Error: invalid action argument(s)." << '\n';
+        std::cerr << "Error: invalid " << inv.what() << " argument(s)." << '\n';
+        return 1;
+    } catch (const std::out_of_range& range) {
+        std::cerr << "Error: missing " << range.what() << " argument(s)." << '\n';
         return 1;
     }
     return 0;
@@ -86,44 +89,36 @@ int App::run(int argc, char *argv[]) {
 
 // Action read
 void App::readAction(cxxopts::ParseResult &args, Wallet wObj) {
-    std::string error = "null";
     if (args.count("category") > 0) {
-        try {
-            std::string category = args["category"].as<std::string>();
-            // Checks if category exists and sets error code to category if it does not
-            if ((wObj.exists(category) == false) && error == "null") {
-                error = "category";
-            }
-            if (args.count("item") > 0) {
-                std::string item = args["item"].as<std::string>();
-                // Checks if item exists and sets error code to item if it does not
-                if ((wObj.getCategory(category).exists(item) == false) && error == "null") {
-                    error = "item";
-                }
-                if (args.count("entry") > 0) {
-                    std::string entry = args["entry"].as<std::string>();
-                    // Checks if entry exists and sets error code to entry if it does not
-                    if ((wObj.getCategory(category).getItem(item).exists(entry) == false) && error == "null") {
-                        error = "entry";
-                    }
-                    std::cout << wObj.getCategory(category).getItem(item).getEntry(entry) << '\n';
-                    return exit(EXIT_SUCCESS);
-                }
-                std::cout << (wObj.getCategory(category).getItem(item)).str() << '\n';
-                return exit(EXIT_SUCCESS);
-            } else if (args.count("entry") > 0) {
-                std::cerr << "Error: missing item argument(s)." << '\n';
-                return exit(EXIT_FAILURE);
-            }
-            std::cout << (wObj.getCategory(category)).str() << '\n';
-            return exit(EXIT_SUCCESS);
-        } catch (...) {
-            std::cerr << "Error: invalid " << error << " argument(s)." << '\n';
-            return exit(EXIT_FAILURE);
+        std::string category = args["category"].as<std::string>();
+        // Checks if category exists and sets error code to category if it does not
+        if (wObj.exists(category) == false) {
+            throw std::invalid_argument("category");
         }
+        if (args.count("item") > 0) {
+            std::string item = args["item"].as<std::string>();
+            // Checks if item exists and sets error code to item if it does not
+            if (wObj.getCategory(category).exists(item) == false) {
+                throw std::invalid_argument("item");
+            }
+            if (args.count("entry") > 0) {
+                std::string entry = args["entry"].as<std::string>();
+                // Checks if entry exists and sets error code to entry if it does not
+                if (wObj.getCategory(category).getItem(item).exists(entry) == false) {
+                    throw std::invalid_argument("entry");
+                }
+                std::cout << wObj.getCategory(category).getItem(item).getEntry(entry) << '\n';
+                return exit(EXIT_SUCCESS);
+            }
+            std::cout << (wObj.getCategory(category).getItem(item)).str() << '\n';
+            return exit(EXIT_SUCCESS);
+        } else if (args.count("entry") > 0) {
+            throw std::out_of_range("item");
+        }
+        std::cout << (wObj.getCategory(category)).str() << '\n';
+        return exit(EXIT_SUCCESS);
     } else if (args.count("item") > 0 || args.count("entry") > 0) {
-        std::cerr << "Error: missing category argument(s)." << '\n';
-        return exit(EXIT_FAILURE);
+        throw std::out_of_range("item");
     } else {
         std::cout << wObj.str() << '\n';
     }
@@ -150,8 +145,7 @@ void App::createAction(const std::string db, cxxopts::ParseResult &args, Wallet 
         wObj.save(db);
         return exit(EXIT_SUCCESS);
     } else {
-        std::cerr << "Error: missing category, item or entry argument(s)." << '\n';
-        return exit(EXIT_FAILURE);
+        throw std::out_of_range("category, item or entry");
     }
 }
 
@@ -183,19 +177,16 @@ void App::deleteAction(const std::string db, cxxopts::ParseResult &args, Wallet 
                 wObj.getCategory(category).deleteItem(item);
                 return exit(EXIT_SUCCESS);
             } else if (args.count("entry") > 0) {
-                std::cerr << "Error: missing item argument(s)." << '\n';
-                return exit(EXIT_FAILURE);
+                throw std::out_of_range("item");
             }
             wObj.deleteCategory(category);
             wObj.save(db);
             return exit(EXIT_SUCCESS);
         } catch (...) {
-            std::cerr << "Error: invalid " << error << " argument(s)." << '\n';
-            return exit(EXIT_FAILURE);
+            throw std::invalid_argument(error);
         }
     } else if (args.count("item") > 0 || args.count("entry") > 0) {
-        std::cerr << "Error: missing category argument(s)." << '\n';
-        return exit(EXIT_FAILURE);
+        throw std::out_of_range("category");
     } else {
         std::cout << wObj.str() << '\n';
     }
@@ -260,25 +251,20 @@ void App::updateAction(const std::string db, cxxopts::ParseResult &args, Wallet 
                                 return exit(EXIT_SUCCESS);
                             }
                         } else {
-                            std::cerr << "Error: invalid entry argument(s)." << '\n';
-                            return exit(EXIT_FAILURE);
+                            throw std::invalid_argument("entry");
                         }
                     } else {
-                        std::cerr << "Error: invalid entry argument(s)." << '\n';
-                        return exit(EXIT_FAILURE);
+                        throw std::invalid_argument("entry");
                     }
                 }
             } else if (args.count("entry") > 0) {
-                std::cerr << "Error: missing item argument(s)." << '\n';
-                return exit(EXIT_FAILURE);
+                throw std::out_of_range("item");
             }
         } catch (...) {
-            std::cerr << "Error: invalid " << error << " argument(s)." << '\n';
-            return exit(EXIT_FAILURE);
+            throw std::invalid_argument(error);
         }
     } else if (args.count("item") > 0 || args.count("entry") > 0) {
-        std::cerr << "Error: missing category argument(s)." << '\n';
-        return exit(EXIT_FAILURE);
+        throw std::out_of_range("category");
     } else {
         std::cout << wObj.str() << '\n';
     }
