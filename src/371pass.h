@@ -50,12 +50,12 @@ cxxopts::Options cxxoptsSetup();
 
 App::Action parseActionArgument(cxxopts::ParseResult &args);
 
+std::vector<std::string> splitString(const std::string &stringToSplit, char delimeter);
+
 void readAction(cxxopts::ParseResult &args, Wallet wObj);
 void createAction(const std::string db, cxxopts::ParseResult &args, Wallet wObj);
 void deleteAction(const std::string db, cxxopts::ParseResult &args, Wallet wObj);
 void updateAction(const std::string db, cxxopts::ParseResult &args, Wallet wObj);
-
-std::vector<std::string> splitString(const std::string &stringToSplit, char delimeter);
 
 std::string getJSON(Wallet &w);
 std::string getJSON(Wallet &w, const std::string &c);

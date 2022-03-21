@@ -117,18 +117,6 @@ bool Item::deleteEntry(std::string key) {
     return false;
 }
 
-bool Item::updateKey(std::string oldKey, std::string newKey) {
-    if (exists(oldKey)) {
-        auto entries = itemEntries.find(oldKey); // Iterator of entries in item
-        std::string value = entries->second; // Save current key's value
-        deleteEntry(oldKey); // Delete current entry from map
-        //addEntry(item); // Add category object into new item ident key
-        return true;
-    } else {
-        return false;
-    }
-}
-
 // Method to return all the entries of the item
 std::unordered_map<std::string, std::string> Item::getAllEntries() {
     return itemEntries;
