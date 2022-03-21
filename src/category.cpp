@@ -11,6 +11,7 @@
 
 #include <string>
 #include <unordered_map>
+
 #include "lib_json.hpp"
 using nlohmann::json;
 
@@ -88,7 +89,7 @@ Item& Category::newItem(std::string itemIdent) {
 bool Category::exists(Item item) {
     if (categoryEntries.find(item.getIdent()) != categoryEntries.end()) {
         return true;
-    } 
+    }
     return false;
 }
 
@@ -128,8 +129,7 @@ bool Category::addItem(Item item) {
 Item& Category::getItem(std::string itemIdent) {
     if (categoryEntries.find(itemIdent) != categoryEntries.end()) {
         return categoryEntries.at(itemIdent);
-    }
-    else {
+    } else {
         throw std::out_of_range("The item with identifier " + itemIdent + " does not exist");
     }
 }
@@ -151,13 +151,14 @@ bool Category::deleteItem(std::string itemIdent) {
     return false;
 }
 
+// Method to update a item ident
 bool Category::updateItem(std::string oldItemIdent, std::string newItemIdent) {
     if (exists(oldItemIdent)) {
-        auto itemEntries = categoryEntries.find(oldItemIdent); // Iterator of items in category
-        Item item = itemEntries->second; // Save current item object
-        item.setIdent(newItemIdent); // Rename item
-        deleteItem(oldItemIdent); // Delete current item from map
-        addItem(item); // Add category object into new item ident key
+        auto itemEntries = categoryEntries.find(oldItemIdent);  // Iterator of items in category
+        Item item = itemEntries->second;                        // Save current item object
+        item.setIdent(newItemIdent);                            // Rename item
+        deleteItem(oldItemIdent);                               // Delete current item from map
+        addItem(item);                                          // Add category object into new item ident key
         return true;
     } else {
         return false;
@@ -195,12 +196,11 @@ bool operator==(const Category& cObj1, const Category& cObj2) {
 //  std::string s = cObj.str();
 std::string Category::str() {
     json items;
-    for(auto item = categoryEntries.begin(); item != categoryEntries.end(); item++) {
+    for (auto item = categoryEntries.begin(); item != categoryEntries.end(); item++) {
         std::unordered_map<std::string, std::string> itemEntries = item->second.getAllEntries();
         json entries;
-        for(auto entry = itemEntries.begin(); entry != itemEntries.end(); entry++) {
+        for (auto entry = itemEntries.begin(); entry != itemEntries.end(); entry++) {
             entries[entry->first] = entry->second;
-
         }
         items[item->first] = entries;
     }

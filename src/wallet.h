@@ -16,13 +16,14 @@
 
 #include <string>
 #include <unordered_map>
+
 #include "category.h"
 
 class Wallet {
-    private:
+   private:
     std::unordered_map<std::string, Category> walletEntries;
 
-    public:
+   public:
     Wallet();
 
     unsigned int size() const;
@@ -47,4 +48,4 @@ class Wallet {
     std::string str();
 };
 
-#endif // WALLET_H
+#endif  // WALLET_H

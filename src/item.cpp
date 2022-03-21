@@ -11,6 +11,7 @@
 
 #include <string>
 #include <unordered_map>
+
 #include "lib_json.hpp"
 
 using nlohmann::json;
@@ -64,7 +65,7 @@ std::string Item::getIdent() const {
 
 // Method to check if entry exists in item
 bool Item::exists(std::string key) {
-    if (itemEntries.count(key)>0) {
+    if (itemEntries.count(key) > 0) {
         return true;
     }
     return false;
@@ -94,8 +95,7 @@ bool Item::addEntry(std::string key, std::string value) {
 std::string Item::getEntry(std::string key) {
     if (itemEntries.find(key) != itemEntries.end()) {
         return itemEntries.at(key);
-    }
-    else {
+    } else {
         throw std::out_of_range("The entry " + key + " does not exist");
     }
 }
@@ -147,7 +147,7 @@ bool operator==(const Item& iObj1, const Item& iObj2) {
 //  std::string s = iObj.str();
 std::string Item::str() const {
     json entries;
-    for (auto entry = itemEntries.begin(); entry != itemEntries.end(); ++entry){
+    for (auto entry = itemEntries.begin(); entry != itemEntries.end(); ++entry) {
         entries[entry->first] = entry->second;
     }
     return entries.dump();

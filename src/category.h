@@ -15,15 +15,15 @@
 
 #include <string>
 #include <unordered_map>
+
 #include "item.h"
 
-
 class Category {
-    private:
+   private:
     std::unordered_map<std::string, Item> categoryEntries;
     std::string categoryIdent;
 
-    public:
+   public:
     Category(std::string categoryIdent);
 
     unsigned int size() const;
@@ -47,4 +47,4 @@ class Category {
     std::string str();
 };
 
-#endif // CATEGORY_H
+#endif  // CATEGORY_H

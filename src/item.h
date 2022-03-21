@@ -20,13 +20,13 @@
 #include <unordered_map>
 
 class Item {
-    private:
+   private:
     std::unordered_map<std::string, std::string> itemEntries;
     std::string identIdent;
 
-    public:
+   public:
     Item(std::string identIdent);
-    
+
     unsigned int size() const;
     bool empty();
 
@@ -45,4 +45,4 @@ class Item {
     std::string str() const;
 };
 
-#endif // ITEM_H
+#endif  // ITEM_H

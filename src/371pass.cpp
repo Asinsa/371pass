@@ -8,8 +8,6 @@
 // -----------------------------------------------------
 
 #include "371pass.h"
-#include "lib_cxxopts.hpp"
-#include "wallet.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -17,6 +15,9 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
+
+#include "lib_cxxopts.hpp"
+#include "wallet.h"
 
 // TODO Complete this function. You have been provided some skeleton code which
 //  retrieves the database file name from cxxopts.

@@ -9,11 +9,12 @@
 
 #include "wallet.h"
 
-#include <string>
-#include <unordered_map>
-#include <iostream>
 #include <fstream>
 #include <iomanip>
+#include <iostream>
+#include <string>
+#include <unordered_map>
+
 #include "lib_json.hpp"
 using nlohmann::json;
 
@@ -108,8 +109,7 @@ bool Wallet::addCategory(Category category) {
 Category& Wallet::getCategory(std::string categoryIdent) {
     if (walletEntries.find(categoryIdent) != walletEntries.end()) {
         return walletEntries.at(categoryIdent);
-    }
-    else {
+    } else {
         throw std::out_of_range("The category with identifier " + categoryIdent + " does not exist");
     }
 }
@@ -131,13 +131,14 @@ bool Wallet::deleteCategory(std::string categoryIdent) {
     return false;
 }
 
+// Method to update a category ident
 bool Wallet::updateCategory(std::string oldCategoryIdent, std::string newCategoryIdent) {
     if (exists(oldCategoryIdent)) {
-        auto categoryEntries = walletEntries.find(oldCategoryIdent); // Iterator of categories in wallet
-        Category category = categoryEntries->second; // Save current category object
-        category.setIdent(newCategoryIdent); // Rename category
-        deleteCategory(oldCategoryIdent); // Delete current category from map
-        addCategory(category); // Add category object into new category ident key
+        auto categoryEntries = walletEntries.find(oldCategoryIdent);  // Iterator of categories in wallet
+        Category category = categoryEntries->second;                  // Save current category object
+        category.setIdent(newCategoryIdent);                          // Rename category
+        deleteCategory(oldCategoryIdent);                             // Delete current category from map
+        addCategory(category);                                        // Add category object into new category ident key
         return true;
     } else {
         return false;
@@ -208,7 +209,7 @@ void Wallet::load(std::string filename) {
         std::ifstream input(filename);
         json jsonWallet;
         input >> jsonWallet;
-        
+
         for (auto category : jsonWallet.items()) {
             Category newCategory(category.key());
             for (auto item : category.value().items()) {
@@ -223,9 +224,7 @@ void Wallet::load(std::string filename) {
     } catch (...) {
         std::runtime_error("File " + filename + "cannot be opened");
     }
-
 }
-
 
 // TODO Write a function ,save, that takes one parameter, the path of the file
 //  to write the database to. The function should serialise the Wallet object
@@ -248,7 +247,6 @@ void Wallet::save(std::string filename) {
 std::unordered_map<std::string, Category> Wallet::getAllEntries() {
     return walletEntries;
 }
-
 
 // TODO Write an == operator overload for the Wallet class, such that two
 //  Wallet objects are equal only if they have the exact same data.
@@ -274,13 +272,13 @@ bool operator==(const Wallet& wObj1, const Wallet& wObj2) {
 //  std::string s = wObj.str();
 std::string Wallet::str() {
     json categories;
-    for(auto category = walletEntries.begin(); category != walletEntries.end(); category++) {
+    for (auto category = walletEntries.begin(); category != walletEntries.end(); category++) {
         std::unordered_map<std::string, Item> categoryEntries = category->second.getAllEntries();
         json items;
-        for(auto item = categoryEntries.begin(); item != categoryEntries.end(); item++) {
+        for (auto item = categoryEntries.begin(); item != categoryEntries.end(); item++) {
             std::unordered_map<std::string, std::string> itemEntries = item->second.getAllEntries();
             json entries;
-            for(auto entry = itemEntries.begin(); entry != itemEntries.end(); entry++) {
+            for (auto entry = itemEntries.begin(); entry != itemEntries.end(); entry++) {
                 entries[entry->first] = entry->second;
             }
             items[item->first] = entries;
