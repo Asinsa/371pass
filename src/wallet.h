@@ -35,8 +35,12 @@ class Wallet {
 
     bool deleteCategory(std::string categoryIdent);
 
+    bool updateCategory(std::string oldCategoryIdent, std::string newCategoryIdent);
+
     void load(std::string filename);
     void save(std::string filename);
+
+    std::unordered_map<std::string, Category> getAllEntries();
 
     friend bool operator==(const Wallet& wObj1, const Wallet& wObj2);
 

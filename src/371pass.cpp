@@ -10,6 +10,7 @@
 #include "371pass.h"
 
 #include <algorithm>
+#include <cstdlib>
 #include <exception>
 #include <iostream>
 #include <string>
@@ -53,104 +54,233 @@ int App::run(int argc, char *argv[]) {
     wObj.load(db);
 
     // Possible actions
-    const Action a = parseActionArgument(args);
-    switch (a) {
-        case Action::CREATE:
-            create(db, args, wObj);
-            break;
+    try {
+        const Action a = parseActionArgument(args);
+        switch (a) {
+            case Action::CREATE:
+                createAction(db, args, wObj);
+                break;
 
-        case Action::READ:
-            read(args, wObj);
-            break;
+            case Action::READ:
+                readAction(args, wObj);
+                break;
 
-        case Action::UPDATE:
-            throw std::runtime_error("update not implemented");
-            break;
+            case Action::UPDATE:
+                updateAction(db, args, wObj);
+                break;
 
-        case Action::DELETE:
-            throw std::runtime_error("delete not implemented");
-            break;
+            case Action::DELETE:
+                deleteAction(db, args, wObj);
+                break;
 
-        default:
-            throw std::runtime_error("Unknown action not implemented");
+            default:
+                std::cerr << "Error: invalid action argument(s)." << '\n';
+                return 1;
+        }
+    } catch (const std::invalid_argument& inv) {
+        std::cerr << "Error: invalid action argument(s)." << '\n';
+        return 1;
     }
-
     return 0;
 }
 
 // Action read
-void App::read(cxxopts::ParseResult &args, Wallet wObj) {
+void App::readAction(cxxopts::ParseResult &args, Wallet wObj) {
     std::string error = "null";
     if (args.count("category") > 0) {
         try {
             std::string category = args["category"].as<std::string>();
-			// Checks if category exists and sets error code to category if it does not
-			if ((wObj.exists(category) == false) && error == "null") {
+            // Checks if category exists and sets error code to category if it does not
+            if ((wObj.exists(category) == false) && error == "null") {
                 error = "category";
             }
             if (args.count("item") > 0) {
                 std::string item = args["item"].as<std::string>();
-				// Checks if item exists and sets error code to item if it does not
-				if ((wObj.getCategory(category).exists(item) == false) && error == "null") {
+                // Checks if item exists and sets error code to item if it does not
+                if ((wObj.getCategory(category).exists(item) == false) && error == "null") {
                     error = "item";
                 }
                 if (args.count("entry") > 0) {
                     std::string entry = args["entry"].as<std::string>();
-					// Checks if entry exists and sets error code to entry if it does not
+                    // Checks if entry exists and sets error code to entry if it does not
                     if ((wObj.getCategory(category).getItem(item).exists(entry) == false) && error == "null") {
                         error = "entry";
                     }
                     std::cout << wObj.getCategory(category).getItem(item).getEntry(entry) << '\n';
-					return;
+                    return exit(EXIT_SUCCESS);
                 }
                 std::cout << (wObj.getCategory(category).getItem(item)).str() << '\n';
-				return;
+                return exit(EXIT_SUCCESS);
             } else if (args.count("entry") > 0) {
-				std::cerr << "Error: missing item argument(s)." << '\n';
-				exit(1);
-			}
+                std::cerr << "Error: missing item argument(s)." << '\n';
+                return exit(EXIT_FAILURE);
+            }
             std::cout << (wObj.getCategory(category)).str() << '\n';
-			return;
+            return exit(EXIT_SUCCESS);
         } catch (...) {
             std::cerr << "Error: invalid " << error << " argument(s)." << '\n';
-			exit(1);
+            return exit(EXIT_FAILURE);
         }
     } else if (args.count("item") > 0 || args.count("entry") > 0) {
-		std::cerr << "Error: missing category argument(s)." << '\n';
-		exit(1);
-	} else {
+        std::cerr << "Error: missing category argument(s)." << '\n';
+        return exit(EXIT_FAILURE);
+    } else {
         std::cout << wObj.str() << '\n';
     }
 }
 
 // Action create
-void App::create(const std::string db, cxxopts::ParseResult &args, Wallet wObj) {
+void App::createAction(const std::string db, cxxopts::ParseResult &args, Wallet wObj) {
     if (args.count("category") > 0) {
         // Gets the category & makes object
         std::string category = args["category"].as<std::string>();
         Category newCategory(category);
-
         if (args.count("item") > 0) {
             // Gets the item & makes object
             std::string item = args["item"].as<std::string>();
             Item newItem(item);
-
             if (args.count("entry") > 0) {
                 // Gets entry key and value by splitting the string by the comma
-                std::istringstream entry(args["entry"].as<std::string>());
-                std::vector<std::string> keyValue;
-                std::string split;
-                while (std::getline(entry, split, ',')) {
-                    keyValue.push_back(split);
-                }
+                std::vector<std::string> keyValue = splitString(args["entry"].as<std::string>(), ',');
                 newItem.addEntry(keyValue.at(0), keyValue.at(1));
             }
             newCategory.addItem(newItem);
         }
         wObj.addCategory(newCategory);
         wObj.save(db);
+        return exit(EXIT_SUCCESS);
     } else {
         std::cerr << "Error: missing category, item or entry argument(s)." << '\n';
+        return exit(EXIT_FAILURE);
+    }
+}
+
+// Action delete
+void App::deleteAction(const std::string db, cxxopts::ParseResult &args, Wallet wObj) {
+    std::string error = "null";
+    if (args.count("category") > 0) {
+        try {
+            std::string category = args["category"].as<std::string>();
+            // Checks if category exists and sets error code to category if it does not
+            if ((wObj.exists(category) == false) && error == "null") {
+                error = "category";
+            }
+            if (args.count("item") > 0) {
+                std::string item = args["item"].as<std::string>();
+                // Checks if item exists and sets error code to item if it does not
+                if ((wObj.getCategory(category).exists(item) == false) && error == "null") {
+                    error = "item";
+                }
+                if (args.count("entry") > 0) {
+                    std::string entry = args["entry"].as<std::string>();
+                    // Checks if entry exists and sets error code to entry if it does not
+                    if ((wObj.getCategory(category).getItem(item).exists(entry) == false) && error == "null") {
+                        error = "entry";
+                    }
+                    wObj.getCategory(category).getItem(item).deleteEntry(entry);
+                    return exit(EXIT_SUCCESS);
+                }
+                wObj.getCategory(category).deleteItem(item);
+                return exit(EXIT_SUCCESS);
+            } else if (args.count("entry") > 0) {
+                std::cerr << "Error: missing item argument(s)." << '\n';
+                return exit(EXIT_FAILURE);
+            }
+            wObj.deleteCategory(category);
+            wObj.save(db);
+            return exit(EXIT_SUCCESS);
+        } catch (...) {
+            std::cerr << "Error: invalid " << error << " argument(s)." << '\n';
+            return exit(EXIT_FAILURE);
+        }
+    } else if (args.count("item") > 0 || args.count("entry") > 0) {
+        std::cerr << "Error: missing category argument(s)." << '\n';
+        return exit(EXIT_FAILURE);
+    } else {
+        std::cout << wObj.str() << '\n';
+    }
+}
+
+std::vector<std::string> App::splitString(const std::string &stringToSplit, char delimeter) {
+    std::istringstream stringstream(stringToSplit);
+    std::vector<std::string> splitString;
+    std::string split;
+    while (std::getline(stringstream, split, delimeter)) {
+        splitString.push_back(split);
+    }
+    return splitString;
+}
+
+// Action update
+void App::updateAction(const std::string db, cxxopts::ParseResult &args, Wallet wObj) {
+    std::string error = "null";
+    if (args.count("category") > 0) {
+        try {
+            std::vector<std::string> categoryValues = splitString(args["category"].as<std::string>(), ':');
+            // Checks if category exists and sets error code to category if it does not
+            if ((wObj.exists(categoryValues.at(0)) == false) && error == "null") {
+                error = "category";
+            } else if (categoryValues.size() == 2) {
+                wObj.updateCategory(categoryValues.at(0), categoryValues.at(1));
+                wObj.save(db);
+                return exit(EXIT_SUCCESS);
+            }
+            if (args.count("item") > 0) {
+                std::vector<std::string> itemValues = splitString(args["item"].as<std::string>(), ':');
+                // Checks if item exists and sets error code to item if it does not
+                if ((wObj.getCategory(categoryValues.at(0)).exists(itemValues.at(0)) == false) && error == "null") {
+                    error = "item";
+                } else if (itemValues.size() == 2) {
+                    wObj.getCategory(categoryValues.at(0)).updateItem(itemValues.at(0), itemValues.at(1));
+                    wObj.save(db);
+                    return exit(EXIT_SUCCESS);
+                }
+                if (args.count("entry") > 0) {
+                    std::vector<std::string> entryValues = splitString(args["entry"].as<std::string>(), ':');
+                    // Checks if entry exists and sets error code to entry if it does not
+                    if (entryValues.size() == 2 || entryValues.size() == 1) {
+                        std::vector<std::string> keyValues = splitString(entryValues.at(entryValues.size() - 1), ',');
+                        if (entryValues.size() == 2 && keyValues.size() == 2) {
+                            if ((wObj.getCategory(categoryValues.at(0)).getItem(itemValues.at(0)).exists(entryValues.at(0)) == false) && error == "null") {
+                                error = "entry";
+                            } else {  // If argument in form NAME:PERSON,ALBERT program will update entry with key NAME to PERSON with value ALBERT.
+                                wObj.getCategory(categoryValues.at(0)).getItem(itemValues.at(0)).deleteEntry(entryValues.at(0));
+                                wObj.getCategory(categoryValues.at(0)).getItem(itemValues.at(0)).addEntry(keyValues.at(0), keyValues.at(1));
+                                wObj.save(db);
+                                return exit(EXIT_SUCCESS);
+                            }
+                        } else if (entryValues.size() == 1 && keyValues.size() == 2) {
+                            if ((wObj.getCategory(categoryValues.at(0)).getItem(itemValues.at(0)).exists(keyValues.at(0)) == false) && error == "null") {
+                                error = "entry";
+                            } else {  // If argument in form NAME,ALBERT program will update entry with key NAME to have value ALBERT.
+                                std::string existingEntryValue = wObj.getCategory(categoryValues.at(0)).getItem(itemValues.at(0)).getEntry(keyValues.at(0));
+                                wObj.getCategory(categoryValues.at(0)).getItem(itemValues.at(0)).deleteEntry(keyValues.at(0));
+                                wObj.getCategory(categoryValues.at(0)).getItem(itemValues.at(0)).addEntry(keyValues.at(1), existingEntryValue);
+                                wObj.save(db);
+                                return exit(EXIT_SUCCESS);
+                            }
+                        } else {
+                            std::cerr << "Error: invalid entry argument(s)." << '\n';
+                            return exit(EXIT_FAILURE);
+                        }
+                    } else {
+                        std::cerr << "Error: invalid entry argument(s)." << '\n';
+                        return exit(EXIT_FAILURE);
+                    }
+                }
+            } else if (args.count("entry") > 0) {
+                std::cerr << "Error: missing item argument(s)." << '\n';
+                return exit(EXIT_FAILURE);
+            }
+        } catch (...) {
+            std::cerr << "Error: invalid " << error << " argument(s)." << '\n';
+            return exit(EXIT_FAILURE);
+        }
+    } else if (args.count("item") > 0 || args.count("entry") > 0) {
+        std::cerr << "Error: missing category argument(s)." << '\n';
+        return exit(EXIT_FAILURE);
+    } else {
+        std::cout << wObj.str() << '\n';
     }
 }
 

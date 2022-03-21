@@ -39,6 +39,8 @@ class Category {
 
     bool deleteItem(std::string itemIdent);
 
+    bool updateItem(std::string oldItemIdent, std::string newItemIdent);
+
     std::unordered_map<std::string, Item> getAllEntries();
     friend bool operator==(const Category& cObj1, const Category& cObj2);
 

@@ -151,6 +151,19 @@ bool Category::deleteItem(std::string itemIdent) {
     return false;
 }
 
+bool Category::updateItem(std::string oldItemIdent, std::string newItemIdent) {
+    if (exists(oldItemIdent)) {
+        auto itemEntries = categoryEntries.find(oldItemIdent); // Iterator of items in category
+        Item item = itemEntries->second; // Save current item object
+        item.setIdent(newItemIdent); // Rename item
+        deleteItem(oldItemIdent); // Delete current item from map
+        addItem(item); // Add category object into new item ident key
+        return true;
+    } else {
+        return false;
+    }
+}
+
 // Method to return all the entries of the category
 std::unordered_map<std::string, Item> Category::getAllEntries() {
     return categoryEntries;

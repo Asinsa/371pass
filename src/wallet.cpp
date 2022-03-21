@@ -131,6 +131,19 @@ bool Wallet::deleteCategory(std::string categoryIdent) {
     return false;
 }
 
+bool Wallet::updateCategory(std::string oldCategoryIdent, std::string newCategoryIdent) {
+    if (exists(oldCategoryIdent)) {
+        auto categoryEntries = walletEntries.find(oldCategoryIdent); // Iterator of categories in wallet
+        Category category = categoryEntries->second; // Save current category object
+        category.setIdent(newCategoryIdent); // Rename category
+        deleteCategory(oldCategoryIdent); // Delete current category from map
+        addCategory(category); // Add category object into new category ident key
+        return true;
+    } else {
+        return false;
+    }
+}
+
 // TODO Write a function, load, that takes one parameter, a std::string,
 //  containing the filename for the database. Open the file, read the contents,
 //  and populates the container for this Wallet. If the file does open throw an
@@ -229,6 +242,11 @@ void Wallet::save(std::string filename) {
     json wallet = json::parse(str());
 
     output << std::setw(0) << wallet << std::endl;
+}
+
+// Method to return all the entries of the wallet
+std::unordered_map<std::string, Category> Wallet::getAllEntries() {
+    return walletEntries;
 }
 
 
