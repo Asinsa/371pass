@@ -44,7 +44,7 @@ unsigned int Wallet::size() const {
 // Example:
 //  Wallet wwObj{};
 //  auto isEmpty = wObj.empty();
-bool Wallet::empty() {
+bool Wallet::empty() const {
     return walletEntries.empty();
 }
 
@@ -68,7 +68,8 @@ Category& Wallet::newCategory(std::string categoryIdent) {
     return walletEntries.at(categoryIdent);
 }
 
-bool Wallet::exists(Category category) {
+// Method to check if a category exists in the wallet
+bool Wallet::exists(Category category) const {
     if (walletEntries.find(category.getIdent()) != walletEntries.end()) {
         return true;
     }
@@ -244,7 +245,7 @@ void Wallet::save(std::string filename) {
 }
 
 // Method to return all the entries of the wallet
-std::unordered_map<std::string, Category> Wallet::getAllEntries() {
+std::unordered_map<std::string, Category> Wallet::getAllEntries() const {
     return walletEntries;
 }
 
@@ -270,7 +271,7 @@ bool operator==(const Wallet& wObj1, const Wallet& wObj2) {
 // Example:
 //  Wallet wObj{};
 //  std::string s = wObj.str();
-std::string Wallet::str() {
+std::string Wallet::str() const {
     json categories;
     for (auto category = walletEntries.begin(); category != walletEntries.end(); category++) {
         std::unordered_map<std::string, Item> categoryEntries = category->second.getAllEntries();

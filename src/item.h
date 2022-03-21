@@ -28,18 +28,18 @@ class Item {
     Item(std::string identIdent);
 
     unsigned int size() const;
-    bool empty();
+    bool empty() const;
 
     void setIdent(std::string newIdent);
     std::string getIdent() const;
 
-    bool exists(std::string key);
+    bool exists(std::string key) const;
     bool addEntry(std::string key, std::string value);
-    std::string getEntry(std::string key);
+    std::string getEntry(std::string key) const;
 
     bool deleteEntry(std::string key);
 
-    std::unordered_map<std::string, std::string> getAllEntries();
+    std::unordered_map<std::string, std::string> getAllEntries() const;
     friend bool operator==(const Item& iObj1, const Item& iObj2);
 
     std::string str() const;

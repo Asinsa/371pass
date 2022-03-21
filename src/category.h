@@ -27,13 +27,13 @@ class Category {
     Category(std::string categoryIdent);
 
     unsigned int size() const;
-    bool empty();
+    bool empty() const;
 
-    std::string getIdent();
+    std::string getIdent() const;
     void setIdent(std::string newIdent);
 
     Item& newItem(std::string itemIdent);
-    bool exists(Item item);
+    bool exists(Item item) const;
     bool addItem(Item item);
     Item& getItem(std::string itemIdent);
 
@@ -41,10 +41,10 @@ class Category {
 
     bool updateItem(std::string oldItemIdent, std::string newItemIdent);
 
-    std::unordered_map<std::string, Item> getAllEntries();
+    std::unordered_map<std::string, Item> getAllEntries() const;
     friend bool operator==(const Category& cObj1, const Category& cObj2);
 
-    std::string str();
+    std::string str() const;
 };
 
 #endif  // CATEGORY_H

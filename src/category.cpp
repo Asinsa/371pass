@@ -41,7 +41,7 @@ unsigned int Category::size() const {
 // Example:
 //  Category c{"categoryIdent"};
 //  auto empty = c.empty();
-bool Category::empty() {
+bool Category::empty() const {
     return categoryEntries.empty();
 }
 
@@ -51,7 +51,7 @@ bool Category::empty() {
 // Example:
 //  Category cObj{"categoryIdent"};
 //  auto ident = cObj.getIdent();
-std::string Category::getIdent() {
+std::string Category::getIdent() const {
     return categoryIdent;
 }
 
@@ -85,8 +85,8 @@ Item& Category::newItem(std::string itemIdent) {
     return categoryEntries.at(itemIdent);
 }
 
-// Method to check if item exists in category
-bool Category::exists(Item item) {
+// Method to check if an item exists in the category
+bool Category::exists(Item item) const {
     if (categoryEntries.find(item.getIdent()) != categoryEntries.end()) {
         return true;
     }
@@ -166,7 +166,7 @@ bool Category::updateItem(std::string oldItemIdent, std::string newItemIdent) {
 }
 
 // Method to return all the entries of the category
-std::unordered_map<std::string, Item> Category::getAllEntries() {
+std::unordered_map<std::string, Item> Category::getAllEntries() const {
     return categoryEntries;
 }
 
@@ -185,7 +185,6 @@ bool operator==(const Category& cObj1, const Category& cObj2) {
     return ((cObj1.categoryIdent == cObj2.categoryIdent) && (cObj1.categoryEntries == cObj2.categoryEntries));
 }
 
-#include <iostream>
 // TODO Write a function, str, that takes no parameters and returns a
 //  std::string of the JSON representation of the data in the Category.
 //
@@ -194,7 +193,7 @@ bool operator==(const Category& cObj1, const Category& cObj2) {
 // Example:
 //  Category cObj{"categoryIdent"};
 //  std::string s = cObj.str();
-std::string Category::str() {
+std::string Category::str() const {
     json items;
     for (auto item = categoryEntries.begin(); item != categoryEntries.end(); item++) {
         std::unordered_map<std::string, std::string> itemEntries = item->second.getAllEntries();

@@ -27,10 +27,10 @@ class Wallet {
     Wallet();
 
     unsigned int size() const;
-    bool empty();
+    bool empty() const;
 
     Category& newCategory(std::string categoryIdent);
-    bool exists(Category category);
+    bool exists(Category category) const;
     bool addCategory(Category category);
     Category& getCategory(std::string categoryIdent);
 
@@ -41,11 +41,11 @@ class Wallet {
     void load(std::string filename);
     void save(std::string filename);
 
-    std::unordered_map<std::string, Category> getAllEntries();
+    std::unordered_map<std::string, Category> getAllEntries() const;
 
     friend bool operator==(const Wallet& wObj1, const Wallet& wObj2);
 
-    std::string str();
+    std::string str() const;
 };
 
 #endif  // WALLET_H

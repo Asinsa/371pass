@@ -43,7 +43,7 @@ int App::run(int argc, char *argv[]) {
 
     // Print the help usage if requested
     if (args.count("help")) {
-        std::cout << options.help() << '\n';
+        std::cout << options.help() << std::endl;
         return 0;
     }
 
@@ -78,10 +78,10 @@ int App::run(int argc, char *argv[]) {
                 return 1;
         }
     } catch (const std::invalid_argument &inv) {
-        std::cerr << "Error: invalid " << inv.what() << " argument(s)." << '\n';
+        std::cerr << "Error: invalid " << inv.what() << " argument(s)." << std::endl;
         return 1;
     } catch (const std::out_of_range &range) {
-        std::cerr << "Error: missing " << range.what() << " argument(s)." << '\n';
+        std::cerr << "Error: missing " << range.what() << " argument(s)." << std::endl;
         return 1;
     }
     return 0;
@@ -118,20 +118,20 @@ void App::readAction(cxxopts::ParseResult &args, Wallet wObj) {
                 if (wObj.getCategory(category).getItem(item).exists(entry) == false) {
                     throw std::invalid_argument("entry");
                 }
-                std::cout << wObj.getCategory(category).getItem(item).getEntry(entry) << '\n';
+                std::cout << wObj.getCategory(category).getItem(item).getEntry(entry) << std::endl;
                 return exit(EXIT_SUCCESS);
             }
-            std::cout << (wObj.getCategory(category).getItem(item)).str() << '\n';
+            std::cout << (wObj.getCategory(category).getItem(item)).str() << std::endl;
             return exit(EXIT_SUCCESS);
         } else if (args.count("entry") > 0) {
             throw std::out_of_range("item");
         }
-        std::cout << (wObj.getCategory(category)).str() << '\n';
+        std::cout << (wObj.getCategory(category)).str() << std::endl;
         return exit(EXIT_SUCCESS);
     } else if (args.count("item") > 0 || args.count("entry") > 0) {
         throw std::out_of_range("category");
     } else {
-        std::cout << wObj.str() << '\n';
+        std::cout << wObj.str() << std::endl;
     }
 }
 
@@ -148,7 +148,11 @@ void App::createAction(const std::string db, cxxopts::ParseResult &args, Wallet 
             if (args.count("entry") > 0) {
                 // Gets entry key and value by splitting the string by the comma
                 std::vector<std::string> keyValue = splitString(args["entry"].as<std::string>(), ',');
-                newItem.addEntry(keyValue.at(0), keyValue.at(1));
+                if (keyValue.size() == 2) {
+                    newItem.addEntry(keyValue.at(0), keyValue.at(1));
+                } else {
+                    newItem.addEntry(keyValue.at(0), "");
+                }
             }
             newCategory.addItem(newItem);
         }
@@ -194,7 +198,7 @@ void App::deleteAction(const std::string db, cxxopts::ParseResult &args, Wallet 
     } else if (args.count("item") > 0 || args.count("entry") > 0) {
         throw std::out_of_range("category");
     } else {
-        std::cout << wObj.str() << '\n';
+        std::cout << wObj.str() << std::endl;
     }
 }
 
@@ -235,7 +239,7 @@ void App::updateAction(const std::string db, cxxopts::ParseResult &args, Wallet 
                             return exit(EXIT_SUCCESS);
                         }
                     } else if (entryValues.size() == 1 && keyValues.size() == 2) {
-                        // Checks if entry exists and throws error if not
+                        // Checks if entry exists and throws error ifn item not
                         if (wObj.getCategory(categoryValues.at(0)).getItem(itemValues.at(0)).exists(keyValues.at(0)) == false) {
                             throw std::invalid_argument("entry");
                         } else {  // If argument in form NAME,ALBERT program will update entry with key NAME to have value ALBERT.
@@ -267,7 +271,7 @@ void App::updateAction(const std::string db, cxxopts::ParseResult &args, Wallet 
     } else if (args.count("item") > 0 || args.count("entry") > 0) {
         throw std::out_of_range("category");
     } else {
-        std::cout << wObj.str() << '\n';
+        std::cout << wObj.str() << std::endl;
     }
 }
 

@@ -40,7 +40,7 @@ unsigned int Item::size() const {
 // Example:
 //  Item iObj{"identIdent"};
 //  auto empty = iObj.empty();
-bool Item::empty() {
+bool Item::empty() const {
     return itemEntries.empty();
 }
 
@@ -63,8 +63,8 @@ std::string Item::getIdent() const {
     return identIdent;
 }
 
-// Method to check if entry exists in item
-bool Item::exists(std::string key) {
+// Method to check if an entry exists in item
+bool Item::exists(std::string key) const {
     if (itemEntries.count(key) > 0) {
         return true;
     }
@@ -92,7 +92,7 @@ bool Item::addEntry(std::string key, std::string value) {
 //  Item iObj{"identIdent"};
 //  iObj.addEntry("key", "value");
 //  auto value = iObj.getEntry("key");
-std::string Item::getEntry(std::string key) {
+std::string Item::getEntry(std::string key) const {
     if (itemEntries.find(key) != itemEntries.end()) {
         return itemEntries.at(key);
     } else {
@@ -118,7 +118,7 @@ bool Item::deleteEntry(std::string key) {
 }
 
 // Method to return all the entries of the item
-std::unordered_map<std::string, std::string> Item::getAllEntries() {
+std::unordered_map<std::string, std::string> Item::getAllEntries() const {
     return itemEntries;
 }
 
